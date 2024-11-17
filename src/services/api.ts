@@ -31,13 +31,51 @@ export const authApi = {
 // API endpoints for schedules
 export const schedulesApi = {
   getAll: () => api.get('/schedules'),
+
   getById: (id: number) => api.get(`/schedules/${id}`),
-  create: (scheduleData: any) => api.post('/schedules', scheduleData),
-  update: (id: number, scheduleData: any) =>
-    api.put(`/schedules/${id}`, scheduleData),
-  delete: (id: number) => api.delete(`/schedules/${id}`),
+
+  create: async (scheduleData: any) => {
+    try {
+      const response = await api.post('/schedules', scheduleData, {
+        validateStatus: (status) => status < 500, // Allow non-fatal status codes to pass
+      });
+      console.log('Schedule created successfully:', response);
+      return response.data;
+    } catch (error) {
+      console.error('Error creating schedule:', error);
+      throw error; // Rethrow for caller handling
+    }
+  },
+
+  update: async (id: number, scheduleData: any) => {
+    try {
+      const response = await api.put(`/schedules/${id}`, scheduleData, {
+        validateStatus: (status) => status < 500,
+      });
+      console.log('Schedule updated successfully:', response);
+      return response.data;
+    } catch (error) {
+      console.error('Error updating schedule:', error);
+      throw error;
+    }
+  },
+
+  delete: async (id: number) => {
+    try {
+      const response = await api.delete(`/schedules/${id}`, {
+        validateStatus: (status) => status < 500,
+      });
+      console.log('Schedule deleted successfully:', response);
+      return response.data;
+    } catch (error) {
+      console.error('Error deleting schedule:', error);
+      throw error;
+    }
+  },
+
   getStats: () => api.get('/schedules/stats'),
 };
+
 
 // API endpoints for notifications
 export const notificationsApi = {
