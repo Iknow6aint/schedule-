@@ -41,7 +41,7 @@ function Notifications() {
 
   const customers = Array.isArray(customersData) ? customersData : [];
 
- // Fetch notification history
+  // Fetch notification history
   const {
     data: historyData,
     isLoading: isLoadingHistory,
@@ -61,6 +61,7 @@ function Notifications() {
   useEffect(() => {
     refetchHistory();
   }, [refetchHistory]);
+  
   // Mutation for sending notifications
   const sendNotification = useMutation({
     mutationFn: (data: { customerIds: string[]; message: string; channel: 'email' | 'sms' | 'whatsapp' }) =>
@@ -143,7 +144,7 @@ function Notifications() {
               <label className="block text-sm font-medium text-gray-700">
                 Notification Channel
               </label>
-              <div className="mt-2 grid grid-cols-3 gap-3">
+              <div className="mt-2 grid grid-cols-3 gap-3 sm:grid-cols-1 md:grid-cols-3">
                 <button
                   type="button"
                   onClick={() => setChannel('email')}
@@ -203,16 +204,9 @@ function Notifications() {
               <button
                 type="submit"
                 disabled={sendNotification.isPending}
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
               >
-                {sendNotification.isPending ? (
-                  'Sending...'
-                ) : (
-                  <>
-                    <Send className="h-5 w-5 mr-2" />
-                    Send Notification
-                  </>
-                )}
+                {sendNotification.isPending ? 'Sending...' : 'Send Notification'}
               </button>
             </div>
           </form>
@@ -220,33 +214,18 @@ function Notifications() {
 
         {/* Notification History */}
         <div className="bg-white shadow rounded-lg p-6">
-          <h3 className="text-lg font-medium text-gray-900 mb-4">Notification History</h3>
+          <h3 className="text-xl font-medium text-gray-900">Notification History</h3>
           {isLoadingHistory ? (
-            <div className="text-center text-gray-500">Loading history...</div>
+            <div className="p-4 text-center text-gray-500">Loading history...</div>
           ) : (
-            <div className="space-y-4">
-              {history.map((notification: NotificationHistory) => (
-                <div
-                  key={notification.id}
-                  className="border-l-4 border-indigo-400 bg-indigo-50 p-4 rounded-r-md"
-                >
-                  <div className="flex justify-between">
-                    <p className="text-sm font-medium text-indigo-900">
-                      To: {notification.customerName}
-                    </p>
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                      notification.status === 'sent'
-                        ? 'bg-green-100 text-green-800'
-                        : 'bg-red-100 text-red-800'
-                    }`}>
-                      {notification.status}
-                    </span>
-                  </div>
-                  <p className="mt-1 text-sm text-indigo-700">{notification.message}</p>
-                  <div className="mt-2 flex justify-between text-xs text-indigo-500">
-                    <span>Via: {notification.channel}</span>
-                    <span>{new Date(notification.sentAt).toLocaleString()}</span>
-                  </div>
+            <div className="divide-y divide-gray-200">
+              {history.map((notification) => (
+                <div key={notification.id} className="py-4">
+                  <p className="font-semibold text-gray-900">{notification.customerName}</p>
+                  <p className="text-sm text-gray-500">{notification.message}</p>
+                  <p className="text-sm text-gray-500">Channel: {notification.channel}</p>
+                  <p className="text-sm text-gray-500">Sent at: {notification.sentAt}</p>
+                  <p className="text-sm text-gray-500">Status: {notification.status}</p>
                 </div>
               ))}
             </div>

@@ -43,6 +43,8 @@ const onSubmit = async (data: ScheduleForm) => {
       deliveryDate: format(new Date(data.deliveryDate), 'yyyy-MM-dd'),
     };
 
+    console.log(formattedData);
+    
     // Call the API to create the schedule
     const response = await schedulesApi.create(formattedData);
 
@@ -54,9 +56,9 @@ const onSubmit = async (data: ScheduleForm) => {
 
     // Check if the error is from Axios and display a user-friendly message
     if (error.response?.data?.message) {
-      alert(`Error: ${error.response.data.message}`);
+      toast.error(`Error: ${error.response.data.message}`);
     } else {
-      alert('An unexpected error occurred while creating the schedule.');
+      toast.error('An unexpected error occurred while creating the schedule.');
     }
   }
 };

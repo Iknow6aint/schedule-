@@ -1,12 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Schedule, ScheduleStats } from '../types/types.ts'; // Import your types
-
 import { 
-  CalendarCheck, 
   Clock, 
-  AlertTriangle,
-  TrendingUp,
   Package,
   CheckCircle
 } from 'lucide-react';
@@ -20,20 +16,15 @@ const mockStats = {
   completed: 91,
 };
 
-
 function Dashboard() {
-  // Declare state types as ScheduleStats and Schedule[] for strong typing
   const [stats, setStats] = useState<ScheduleStats>(mockStats);
   const [recentSchedules, setRecentSchedules] = useState<Schedule[]>([]);
 
-  // Fetch stats from the API when the component mounts
   useEffect(() => {
     async function fetchStats() {
       try {
         const response = await schedulesApi.getStats();
-        console.log(response)
-         // Fetch stats from the API
-        setStats(response.data); // Update the stats state with the fetched data
+        setStats(response.data);
       } catch (error) {
         console.error('Error fetching stats:', error);
       }
@@ -41,13 +32,13 @@ function Dashboard() {
 
     async function fetchRecentSchedules() {
       try {
-        const response = await schedulesApi.getAll(); // Fetch all schedules from the API
+        const response = await schedulesApi.getAll();
         const formattedSchedules = response.data.map((schedule: Schedule) => ({
           ...schedule,
           dispatchDate: format(new Date(schedule.dispatchDate), 'yyyy-MM-dd'),
           deliveryDate: format(new Date(schedule.deliveryDate), 'yyyy-MM-dd'),
         }));
-        setRecentSchedules(formattedSchedules); // Update the recent schedules state with the fetched data
+        setRecentSchedules(formattedSchedules);
       } catch (error) {
         console.error('Error fetching recent schedules:', error);
       }
@@ -55,7 +46,7 @@ function Dashboard() {
 
     fetchStats();
     fetchRecentSchedules();
-  }, []); // Empty dependency array ensures this runs once when the component mounts
+  }, []);
 
   return (
     <div className="space-y-6">
@@ -76,68 +67,56 @@ function Dashboard() {
       </div>
 
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        <div className="bg-white overflow-hidden shadow rounded-lg">
-          <div className="p-5">
-            <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <Package className="h-6 w-6 text-gray-400" />
-              </div>
-              <div className="ml-5 w-0 flex-1">
-                <dl>
-                  <dt className="text-sm font-medium text-gray-500 truncate">
-                    Total Reminders Scheduled
-                  </dt>
-                  <dd className="flex items-baseline">
-                    <div className="text-2xl font-semibold text-gray-900">
-                      {stats.total}
-                    </div>
-                  </dd>
-                </dl>
-              </div>
+        <div className="bg-white overflow-hidden shadow rounded-lg p-5">
+          <div className="flex items-center">
+            <Package className="h-6 w-6 text-gray-400" />
+            <div className="ml-5 w-0 flex-1">
+              <dl>
+                <dt className="text-sm font-medium text-gray-500 truncate">
+                  Total Reminders Scheduled
+                </dt>
+                <dd className="flex items-baseline">
+                  <div className="text-2xl font-semibold text-gray-900">
+                    {stats.total}
+                  </div>
+                </dd>
+              </dl>
             </div>
           </div>
         </div>
 
-        <div className="bg-white overflow-hidden shadow rounded-lg">
-          <div className="p-5">
-            <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <CheckCircle className="h-6 w-6 text-green-400" />
-              </div>
-              <div className="ml-5 w-0 flex-1">
-                <dl>
-                  <dt className="text-sm font-medium text-gray-500 truncate">
-                    Successful Deliveries
-                  </dt>
-                  <dd className="flex items-baseline">
-                    <div className="text-2xl font-semibold text-gray-900">
-                      {stats.completed}
-                    </div>
-                  </dd>
-                </dl>
-              </div>
+        <div className="bg-white overflow-hidden shadow rounded-lg p-5">
+          <div className="flex items-center">
+            <CheckCircle className="h-6 w-6 text-green-400" />
+            <div className="ml-5 w-0 flex-1">
+              <dl>
+                <dt className="text-sm font-medium text-gray-500 truncate">
+                  Successful Deliveries
+                </dt>
+                <dd className="flex items-baseline">
+                  <div className="text-2xl font-semibold text-gray-900">
+                    {stats.completed}
+                  </div>
+                </dd>
+              </dl>
             </div>
           </div>
         </div>
 
-        <div className="bg-white overflow-hidden shadow rounded-lg">
-          <div className="p-5">
-            <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <Clock className="h-6 w-6 text-yellow-400" />
-              </div>
-              <div className="ml-5 w-0 flex-1">
-                <dl>
-                  <dt className="text-sm font-medium text-gray-500 truncate">
-                    Pending Reminders
-                  </dt>
-                  <dd className="flex items-baseline">
-                    <div className="text-2xl font-semibold text-gray-900">
-                      {stats.active}
-                    </div>
-                  </dd>
-                </dl>
-              </div>
+        <div className="bg-white overflow-hidden shadow rounded-lg p-5">
+          <div className="flex items-center">
+            <Clock className="h-6 w-6 text-yellow-400" />
+            <div className="ml-5 w-0 flex-1">
+              <dl>
+                <dt className="text-sm font-medium text-gray-500 truncate">
+                  Pending Reminders
+                </dt>
+                <dd className="flex items-baseline">
+                  <div className="text-2xl font-semibold text-gray-900">
+                    {stats.active}
+                  </div>
+                </dd>
+              </dl>
             </div>
           </div>
         </div>
@@ -182,14 +161,8 @@ function Dashboard() {
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                           {schedule.deliveryDate}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                            schedule.status === 'Active'
-                              ? 'bg-green-100 text-green-800'
-                              : 'bg-gray-100 text-gray-800'
-                          }`}>
-                            {schedule.status}
-                          </span>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {schedule.status}
                         </td>
                       </tr>
                     ))}
